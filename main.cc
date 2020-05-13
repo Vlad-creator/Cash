@@ -2,7 +2,7 @@
 #include "queue.h"
 
 
-
+// Проверяем, попали мы в кэш или нет. 
 int check(int value, int cash_len, struct list_d* hash_t,struct node_t* knot, int* size) {
 	struct list_d* node;
 	if (check_in_hash(value, hash_t, cash_len) == 1) {
@@ -28,11 +28,12 @@ int main(void) {
 	struct list_d* hash_t;
 	struct node_t knot;
 	int size = 1;
-
+	// Вводим длину кэша и лину запросов
 	scanf("%d%d", &cash_len, &quest);
 	create_hash(cash_len, &hash_t);
 
 	while (scanf("%d", &value) == 1) {
+		// Проверяем попали мы в кэш или нет
 		if (check(value,cash_len,hash_t,&knot,&size) == 1)
 			count++;
 	}
