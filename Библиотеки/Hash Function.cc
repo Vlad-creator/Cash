@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #pragma warning (disable:4996)
-int NO_VALUE = 1;
+int NO_VALUE = 0;
 // Пишу здесь хэш функцию: массив из структур двухсвязных списков
 
 // Одна ячейка двухсвязного списка
@@ -10,21 +10,22 @@ struct list_d {
 	struct list_d* parent = NULL;
 	struct list_d* son = NULL;
 	int value = NO_VALUE;
-	int* ptr; //Указатель на твою структуру из частот
 };
 
 // Создает ячейку
 void create_node(struct list_d* node) {
 	struct list_d* son = (struct list_d*) calloc(1, sizeof(struct list_d));
 	son->parent = node;
+	node->son = son;
 	son->value = NO_VALUE;
 
 };
 
 // Удаляем ячейку
-void del_node(struct list_d* parent) {
-	parent->son = NULL;
-	free(parent);
+void del_node(struct list_d* node) {
+	node->son = NULL;
+	node->parent = NULL;
+	node->value = NO_VALUE;
 };
 
 // Хэш функция. Берет число, длину кэша и вычислят значение
@@ -37,53 +38,44 @@ void create_hash(int cash_len, struct list_d** hash_t) {
 	*hash_t = (struct list_d*)calloc(cash_len, sizeof(struct list_d));
 }
 
-//Удаляем из хэша значение (НЕ РАБОТАЕТ)
+//Удаляем из хэша значение 
 void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	//Находим ячейку в кэшэ
 	int key = hash_f(value, cash_len);
-	list_d node = hash_t[key];
+	list_d* node = &hash_t[key];
 
-	while (node.son != NULL || node.value != value)
-		node = *node.son;
-	node.value = NO_VALUE;
+	while (node->son != NULL && node->value != value)
+		node = node->son;
+	node->value = NO_VALUE;
 
 	// Перевязыаем сына удаляемой ячейки к отцу.
-	node.son->parent = node.parent;
+	if(node->son->value != NO_VALUE)
+	node->son->parent = node->parent;
 
-	del_node(&node);
-	// Здесь нужно удалить частоты
+	del_node(node);
 }
 
-// Добавляем в кэш новое значени и сдвигаем все предыдущие. (НЕ РАБОТАЕТ)
-struct list_d* add_hash(struct list_d* hash_t, int cash_len, int value) {
+// Добавляем в кэш новое значени и сдвигаем все предыдущие
+void add_hash(struct list_d* hash_t, int cash_len, int value) {
 
 	//Находим ячейку в кэшэ
 	int key = hash_f(value, cash_len);
-	list_d node = hash_t[key];
+	list_d* node = &hash_t[key];
 
 	//Проверка на коллизии
-	if (node.value == NULL) {
-		node.value = value;
-		//Здесь нужно привязать к частотам
-		create_node(&node);
-	}
-	else {
-		while (node.son != NULL)
-			node = *node.son;
-		node.value = value;
-		// Здесь нужно привязать к частотам
-		create_node(&node);
-	}
-	return &node;
-	
+	while (node->son != NULL && node->value != 0)
+			node = node->son;
+		node->value = value;
+		create_node(node);
+
 }
-// Проверяем есть ли в кэшэ значение искомое. Если есть возвращает 1, если нет то 0.
+
 int check_in_hash(int value, struct list_d* hash_t, int cash_len) {
 	int key = hash_f(value, cash_len);
 	list_d node = hash_t[key];
-	while (node.value == 0 || node.son != NULL)
-		node = *node.parent;
-	if (node.value != 0)
+	while (node.value != value && node.son != NULL)
+		node = *node.son;
+	if (node.value == value)
 		return 1;
 	else
 		return 0;
