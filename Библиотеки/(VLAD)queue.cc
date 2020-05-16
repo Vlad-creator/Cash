@@ -1,79 +1,126 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
 
-struct node_t
+#include "heap_functions.h"
+
+struct node_t* create_queue(int N)
 {
-	int age = 100;
-	int data = 0;
-	struct node_t* next = NULL;
+	struct node_t* top = (struct node_t*)calloc(N , sizeof(struct node_t));
+	return top;
 };
 
-
-
-
-
-
-struct node_t* push_list(struct node_t* head, int data) {
-	struct node_t* new_last = head;
-	while (new_last->next != NULL)
-		new_last = new_last->next;
-
-	struct node_t* new_node = (struct node_t*)calloc(1, sizeof(struct node_t));
-	new_last->next= new_node;
-
-	new_last->next->age = 1;
-	new_last->next->data = data;
-	new_last->next->next = NULL;
-	return new_last->next;
-};
-
-void Incr_freq(struct node_t* head, int value) {
-	struct node_t* point = head;
-	struct node_t* otvet = head;
-	while (point->next != NULL) {
-		if (point->data == value) {
-			++point->age;
-			return;
-		}
-		point = point->next;
-	}
-	push_list(head, value);
-
-}
-
-struct node_t* create_node(int data)
+int size(struct node_t* top , int N)
 {
-	struct node_t* head = (struct node_t*)calloc(1, sizeof(struct node_t));
-	struct node_t* next = NULL;
-
-	head->age = 1;
-	head->data = data;
-	head->next = next;
-	return head;
-};
-
-int Find_Min(struct node_t* head)
-{
-	int min = head->age;
-	struct node_t* point = head;
-	struct node_t* otvet = head;
-	while (point != NULL)
+	for (int i = 0 ; i < N ; i++)
 	{
-		if ((point->age) <= min)
-		{
-			min = (point->age);
-			otvet = point;
-		};
-		point = point->next;
+		if (((top + i) -> age) == 0)
+			return i;
 	};
-	return otvet->data;
+	return N;
 };
 
-void print_list(FILE* f, struct node_t* p)
+struct node_t* min_t(struct node_t* left , struct node_t* right)
 {
-	while (p != NULL)
+	if ((left -> age) <= (right -> age))
+		return left;
+	else
+		return right;
+};
+
+void swap (struct node_t* a , struct node_t* b)
+{
+	struct node_t per = *a;
+	a -> age = b -> age;
+	b -> age = per.age;
+	a -> data = b -> data;
+	b -> data = per.data;
+};
+
+void shift_down (struct node_t* top , int i , int N)
+{
+	int pright = 0;
+	int pleft = 0;
+	int sizet = size(top , N);
+	while (right(i) < sizet)
 	{
-		fprintf(f, "%d - %d\n", p->age, (p->data));
-		p = p->next;
+		int new_i = 0;
+		pright = right(i);
+		pleft = left(i);
+		struct node_t* pmin = min_t((top + pleft) , (top + pright));
+		if ((pmin -> age) == ((top + pright) -> age))
+			new_i = pright;
+		else
+			new_i = pleft;
+		swap((top + i) , (top + new_i));
+		i = new_i;
+	};
+	if (left(i) < sizet)
+		swap((top + i) , (top + left(i)));
+};
+		
+		
+		
+	
+
+void shift_up(struct node_t* top , int i)
+{
+	if (i == 0)
+		return;
+	int new_i = parent(i);
+	if (((top + i) -> age) < ((top + new_i) -> age))
+	{
+		swap(top + i , (top + new_i));
+		shift_up(top , new_i);
+	};
+};
+
+void delete_min(struct node_t* top , int N)
+{
+	swap(top , (top + N - 1));
+	((top + N - 1) -> age) = 0;
+	((top + N - 1) -> data) = NULL;
+};	
+
+int check(struct node_t* top , int* data_t , int sizet)
+{
+	for (int i = 0 ; i < sizet ; i++)
+	{
+		if (*((top + i) -> data) == *data_t)
+			return i;
+	};
+	return (-10);
+};
+
+void push(struct node_t* top , int i , int* data_t)
+{
+	((top + i) -> age)++;
+	((top + i) -> data) = data_t;
+};
+	
+void Incr_freq(struct node_t* top , int sizet , int* data_t , int N)
+{	
+	int p = check(top , data_t , sizet);
+	if (p == -10)
+	{
+		if (sizet < N)
+		{
+			push(top , sizet  , data_t);
+			shift_up(top , sizet);
+		}
+		else
+			if (sizet == N)
+				{
+					delete_min(top , N);
+					push(top , sizet - 1 , data_t);
+					shift_up(top , sizet - 1);
+				};
 	}
-}
+	else
+	{
+		((top + p) -> age)++;
+		shift_up(top , p);
+		shift_down(top , p , N);
+	};
+};
+
