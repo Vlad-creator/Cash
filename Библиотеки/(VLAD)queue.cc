@@ -5,7 +5,7 @@
 struct node_t
 {
 	int age;
-	int* data;
+	int data;
 };
 
 static inline int  parent(int i) { return (i - 1) / 2; };
@@ -110,7 +110,7 @@ void shift_up(struct node_t* top, int i)
 	return (-10);
 };*/
 
-void push(struct node_t* top, int i, int* data_t)
+void push(struct node_t* top, int i, int data_t)
 {
 	((top + i)->age)++;
 	((top + i)->data) = data_t;
