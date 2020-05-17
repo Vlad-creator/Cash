@@ -68,7 +68,7 @@ int check(struct node_t* top , int* data_t , int N);//+
 	N - размер кэша
 */
 //добавление или увелечение приоритета данных в очереди
-void Incr_freq(struct node_t* top , int* data_t , int N , int info);//+
+void Incr_freq(struct node_t* top , int* data_t , int* N);//+
 /*
 	top - указатель на начало очереди
 	data_t - указательна данные которые запрашиваются
