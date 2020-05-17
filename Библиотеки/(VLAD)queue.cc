@@ -98,12 +98,13 @@ void push(struct node_t* top , int i , int* data_t)
 	((top + i) -> data) = data_t;
 };
 	
-void Incr_freq(struct node_t* top , int* data_t , int N , int info)
-{	
-	if (info == -1)
+void Incr_freq(struct node_t* top , int* data_t , int* N)
+{
+	int p = check(top , data_t , *N - 1);	
+	if (p == -1)
 	{
-		int sizet = size(top , N);
-		if (sizet < N)
+		int sizet = size(top , *N);
+		if (sizet < *N)
 		{
 			push(top , sizet  , data_t);
 			shift_up(top , sizet);
@@ -111,17 +112,17 @@ void Incr_freq(struct node_t* top , int* data_t , int N , int info)
 		else
 			if (sizet == N)
 				{
-					top = (struct node_t*)realloc(top , N = N + 1000);
+					*N = *N + 1000;
+					top = (struct node_t*)realloc(top , *N);
 					push(top , sizet , data_t);
 					shift_up(top , sizet);
 				};
 	}
 	else
 	{
-		int p = check(top , data_t , N - 1);
 		((top + p) -> age)++;
 		shift_up(top , p);
-		shift_down(top , p , N);
+		shift_down(top , p , *N);
 	};
 };
 
