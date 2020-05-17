@@ -5,7 +5,7 @@
 struct node_t
 {
 	int age;
-	int* data;
+	int data;
 };
 
 static inline int  parent(int i) { return (i - 1) / 2; };
@@ -92,23 +92,23 @@ void delete_min(struct node_t* top, int N)
 	((top + N - 1)->data) = NULL;
 };
 
-int check(struct node_t* top, int* data_t, int sizet)
+int check(struct node_t* top, int data_t, int sizet)
 {
 	for (int i = 0; i < sizet; i++)
 	{
-		if (*((top + i)->data) == *data_t)
+		if (((top + i)->data) == data_t)
 			return i;
 	};
 	return (-10);
 };
 
-void push(struct node_t* top, int i, int* data_t)
+void push(struct node_t* top, int i, int data_t)
 {
 	((top + i)->age)++;
 	((top + i)->data) = data_t;
 };
 
-void Incr_freq(struct node_t* top, int sizet, int* data_t, int N)
+void Incr_freq(struct node_t* top, int sizet, int data_t, int N)
 {
 	int p = check(top, data_t, sizet);
 	if (p == -10)
