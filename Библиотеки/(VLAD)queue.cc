@@ -20,14 +20,22 @@ struct node_t* create_queue(int N)
 	return top;
 };
 
-int size(struct node_t* top, int N)
+int size_check(struct node_t* top , int data_t , int N , int* sizet)
 {
-	for (int i = 0; i < N; i++)
+	int place = -1;
+	for (int i = 0 ; i < N ; i++)
 	{
-		if (((top + i)->age) == 0)
-			return i;
+		if ((((top + i) -> data) == data_t) && (((top + i) -> age) != 0))
+			place = i;
+		if (((top + i) -> age) == 0)
+		{
+			*sizet = i;
+			break;
+		};
 	};
-	return N;
+	if (*sizet == -1)
+		*sizet = N;
+	return place;
 };
 
 struct node_t* min_t(struct node_t* left, struct node_t* right)
@@ -85,14 +93,14 @@ void shift_up(struct node_t* top, int i)
 	};
 };
 
-void delete_min(struct node_t* top, int N)
+/*void delete_min(struct node_t* top, int N)
 {
 	swap(top, (top + N - 1));
 	((top + N - 1)->age) = 0;
 	((top + N - 1)->data) = NULL;
-};
+};*/
 
-int check(struct node_t* top, int* data_t, int sizet)
+/*int check(struct node_t* top, int* data_t, int sizet)
 {
 	for (int i = 0; i < sizet; i++)
 	{
@@ -100,7 +108,7 @@ int check(struct node_t* top, int* data_t, int sizet)
 			return i;
 	};
 	return (-10);
-};
+};*/
 
 void push(struct node_t* top, int i, int* data_t)
 {
@@ -108,28 +116,36 @@ void push(struct node_t* top, int i, int* data_t)
 	((top + i)->data) = data_t;
 };
 
-void Incr_freq(struct node_t* top, int sizet, int* data_t, int N)
+void Incr_freq(struct node_t* top , int data_t , int N)
 {
-	int p = check(top, data_t, sizet);
-	if (p == -10)
+	static int size = 100;
+	int sizet = -1;
+	int p = size_check(top , data_t , size , &sizet);	
+	if (p == -1)
 	{
-		if (sizet < N)
+		if (sizet < size)
 		{
-			push(top, sizet, data_t);
-			shift_up(top, sizet);
+			push(top , sizet  , data_t);
+			shift_up(top , sizet);
 		}
 		else
-			if (sizet == N)
-			{
-				delete_min(top, N);
-				push(top, sizet - 1, data_t);
-				shift_up(top, sizet - 1);
-			};
+			if (sizet == size)
+				{
+					size = size + 1000;
+					top = (struct node_t*)realloc(top , size);
+					push(top , sizet , data_t);
+					shift_up(top , sizet);
+				};
 	}
 	else
 	{
-		((top + p)->age)++;
-		shift_up(top, p);
-		shift_down(top, p, N);
+		((top + p) -> age)++;
+		shift_up(top , p);
+		shift_down(top , p , sizet);
 	};
+};
+
+int Find_min(struct node_t* top , int N)
+{
+	return top -> data;
 };
