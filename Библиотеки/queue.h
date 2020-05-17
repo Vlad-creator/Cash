@@ -24,10 +24,12 @@ struct node_t* min_t(struct node_t* left, struct node_t* right);//+
 	right - правый ребёнок
 */
 //определение размера очереди
-int size(struct node_t* top, int N);//+
+int size_check(struct node_t* top , int data_t , int N , int* sizet)//+
 /*
 	top - указатель на начало массива
-	N - размер кэша
+	data_t - данные номер которых хотим найти
+	N - максимальный размер очереди
+	sizet - указатель на текущий размер очереди
 */
 //поменять 2 элемента местами
 void swap(struct node_t* a, struct node_t* b);//+
@@ -60,14 +62,14 @@ void shift_up(struct node_t* top, int i);//+
 	i - номер элемента который хотим поднять
 */
 //проверка на наличие эелемента в очереди
-int check(struct node_t* top, int* data_t, int N);//+
+int check(struct node_t* top, int data_t, int N);//+
 /*
 	top - указатель на начало очереди
 	data_t - указатель на данные который хотим найти
 	N - размер кэша
 */
 //добавление или увелечение приоритета данных в очереди
-void Incr_freq(struct node_t* top, int sizet, int* data_t, int N);//+
+void Incr_freq(struct node_t* top, int sizet, int data_t, int N);//+
 /*
 	top - указатель на начало очереди
 	sizet - нынешний размер очереди
