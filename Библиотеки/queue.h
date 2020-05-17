@@ -15,7 +15,7 @@ static inline int right(int i) {return 2 * i + 2;};
 //создание очереди размером N
 struct node_t* create_queue(int N);//+
 /*
-	N - размер кэша
+	N - размер массива
 */
 //определение структуры с наименьшим приоритетом
 struct node_t* min_t(struct node_t* left , struct node_t* right);//+
@@ -27,7 +27,7 @@ struct node_t* min_t(struct node_t* left , struct node_t* right);//+
 int size(struct node_t* top , int N);//+
 /*
 	top - указатель на начало массива
-	N - размер кэша
+	N - размер массива
 */
 //поменять 2 элемента местами
 void swap (struct node_t* a , struct node_t* b);//+
@@ -38,7 +38,7 @@ void swap (struct node_t* a , struct node_t* b);//+
 void delete_min(struct node_t* top , int N);//+
 /*
 	top - указатель на начало массива
-	N - размер кэша
+	N - размер массива
 */
 //добавление элемента в конец очереди
 void push(struct node_t* top , int i , int* data_t);//+
@@ -52,7 +52,7 @@ void shift_down (struct node_t* top , int i , int N);//+
 /*
 	top - указатель на начало очереди
 	i - номер элемента который хотим опустить
-	N - размер кэша
+	N - размер массива
 */
 //поднять элемент вверх если надо
 void shift_up(struct node_t* top , int i);//+
@@ -68,10 +68,17 @@ int check(struct node_t* top , int* data_t , int N);//+
 	N - размер кэша
 */
 //добавление или увелечение приоритета данных в очереди
-void Incr_freq(struct node_t* top , int sizet , int* data_t , int N);//+
+void Incr_freq(struct node_t* top , int* data_t , int N , int info);//+
 /*
 	top - указатель на начало очереди
-	sizet - нынешний размер очереди
 	data_t - указательна данные которые запрашиваются
-	N - размер кэша
+	N - размер массива
+	info - информация о том есть ли в кэше эти данные , если нет , то 
+	       info == -1 , иначе есть
+*/
+//возвращает данные с наименьшей частотой в кэше
+int Find_min(struct node_t* top , int N);
+/*
+	top - указатель на начало очереди
+	N - размер массива
 */
